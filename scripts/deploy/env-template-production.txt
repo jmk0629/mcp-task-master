@@ -1,0 +1,40 @@
+# 프로덕션 환경 설정 템플릿
+# 이 파일을 .env.production으로 복사하고 실제 값으로 변경하세요
+# ⚠️ 보안: 프로덕션 환경에서는 강력한 패스워드를 사용하세요
+
+ENVIRONMENT=production
+
+# GitHub Container Registry
+GITHUB_REPOSITORY=your-username/tofumaker
+IMAGE_TAG=latest
+
+# 데이터베이스 설정 (강력한 패스워드 사용)
+POSTGRES_PASSWORD=production_very_secure_password_with_special_chars_123!
+
+# Redis 설정 (강력한 패스워드 사용)
+REDIS_PASSWORD=production_redis_very_secure_password_456!
+
+# JWT 설정 (최소 64자 이상, 랜덤 생성 권장)
+JWT_SECRET=production_jwt_secret_key_must_be_very_long_and_random_generated_minimum_64_characters
+
+# OpenStack 설정
+OPENSTACK_AUTH_URL=https://your-production-openstack:5000/v3
+OPENSTACK_USERNAME=production_user
+OPENSTACK_PASSWORD=production_openstack_secure_password
+OPENSTACK_PROJECT_NAME=production_project
+OPENSTACK_USER_DOMAIN_NAME=Default
+OPENSTACK_PROJECT_DOMAIN_NAME=Default
+
+# 알림 설정
+SLACK_WEBHOOK_URL=https://hooks.slack.com/services/YOUR/PRODUCTION/WEBHOOK
+
+# 모니터링 설정
+MONITORING_WEBHOOK_URL=https://your-monitoring-service.com/production/webhook
+
+# 백업 설정
+BACKUP_RETENTION_DAYS=30
+BACKUP_S3_BUCKET=tofumaker-backups-production
+
+# SSL 인증서 설정 (Let's Encrypt 등)
+SSL_EMAIL=admin@tofumaker.com
+SSL_DOMAIN=tofumaker.com 

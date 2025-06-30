@@ -1,0 +1,144 @@
+# OpenStack VM 생성 템플릿
+# 이 템플릿은 TfTemplateManager에 의해 동적으로 파라미터가 주입됩니다.
+
+terraform {
+  required_providers {
+    openstack = {
+      source  = "terraform-provider-openstack/openstack"
+      version = "~> 1.48.0"
+    }
+  }
+}
+
+# OpenStack Provider 설정
+provider "openstack" {
+  # 환경변수 또는 설정 파일에서 인증 정보를 읽어옵니다
+  # OS_AUTH_URL, OS_USERNAME, OS_PASSWORD, OS_TENANT_NAME 등
+}
+
+# 데이터 소스: 이미지 정보
+data "openstack_images_image_v2" "vm_image" {
+  name        = "${image_name}"
+  most_recent = true
+}
+
+# 데이터 소스: 네트워크 정보
+data "openstack_networking_network_v2" "vm_network" {
+  name = "${network_name}"
+}
+
+# 데이터 소스: 보안 그룹 정보
+data "openstack_networking_secgroup_v2" "vm_secgroup" {
+  name = "${security_group}"
+}
+
+# 키페어 리소스 (존재하지 않는 경우 생성)
+resource "openstack_compute_keypair_v2" "vm_keypair" {
+  name       = "${key_pair}"
+  public_key = "${public_key_content}"
+}
+
+# 부팅 볼륨 생성
+resource "openstack_blockstorage_volume_v3" "vm_volume" {
+  name              = "${vm_name}-volume"
+  size              = ${disk_size}
+  image_id          = data.openstack_images_image_v2.vm_image.id
+  volume_type       = "${volume_type}"
+  availability_zone = "${availability_zone}"
+  
+  metadata = {
+    ${volume_metadata}
+  }
+}
+
+# VM 인스턴스 생성
+resource "openstack_compute_instance_v2" "vm_instance" {
+  name              = "${vm_name}"
+  flavor_name       = "${instance_type}"
+  key_pair          = openstack_compute_keypair_v2.vm_keypair.name
+  availability_zone = "${availability_zone}"
+  
+  # 부팅 볼륨 설정
+  block_device {
+    uuid                  = openstack_blockstorage_volume_v3.vm_volume.id
+    source_type          = "volume"
+    destination_type     = "volume"
+    boot_index           = 0
+    delete_on_termination = ${delete_on_termination}
+  }
+  
+  # 네트워크 설정
+  network {
+    uuid = data.openstack_networking_network_v2.vm_network.id
+  }
+  
+  ${additional_networks}
+  
+  # 보안 그룹 설정
+  security_groups = [
+    data.openstack_networking_secgroup_v2.vm_secgroup.name,
+    ${additional_security_groups}
+  ]
+  
+  # 사용자 데이터 (cloud-init)
+  user_data = base64encode(<<-EOF
+${user_data}
+EOF
+  )
+  
+  # 메타데이터
+  metadata = {
+    ${instance_metadata}
+  }
+  
+  # 태그
+  tags = [
+    ${instance_tags}
+  ]
+}
+
+# Floating IP 할당 (옵션)
+${floating_ip_block}
+
+# 추가 볼륨 (옵션)
+${additional_volumes}
+
+# 출력 값들
+output "instance_id" {
+  description = "생성된 VM 인스턴스 ID"
+  value       = openstack_compute_instance_v2.vm_instance.id
+}
+
+output "instance_name" {
+  description = "VM 인스턴스 이름"
+  value       = openstack_compute_instance_v2.vm_instance.name
+}
+
+output "private_ip" {
+  description = "VM의 프라이빗 IP 주소"
+  value       = openstack_compute_instance_v2.vm_instance.access_ip_v4
+}
+
+output "public_ip" {
+  description = "VM의 퍼블릭 IP 주소 (Floating IP)"
+  value       = ${floating_ip_output}
+}
+
+output "volume_id" {
+  description = "부팅 볼륨 ID"
+  value       = openstack_blockstorage_volume_v3.vm_volume.id
+}
+
+output "deployment_info" {
+  description = "배포 정보"
+  value = {
+    instance_id       = openstack_compute_instance_v2.vm_instance.id
+    instance_name     = openstack_compute_instance_v2.vm_instance.name
+    instance_type     = "${instance_type}"
+    image_id          = data.openstack_images_image_v2.vm_image.id
+    private_ip        = openstack_compute_instance_v2.vm_instance.access_ip_v4
+    public_ip         = ${floating_ip_output}
+    availability_zone = "${availability_zone}"
+    created_at        = timestamp()
+  }
+} 

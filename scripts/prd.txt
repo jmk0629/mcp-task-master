@@ -1,0 +1,160 @@
+<context>
+# Overview  
+Spring Boot 기반 게시판과 OpenStack 연동 시스템을 개발합니다. 사용자가 게시글을 작성하면서 동시에 OpenStack VM을 생성/관리할 수 있는 통합 플랫폼입니다. tofumaker REST API를 통해 Terraform 템플릿을 관리하고, 게시판 CRUD 기능과 클라우드 인프라 관리를 하나의 시스템에서 제공합니다.
+
+# Core Features  
+## 게시판 CRUD 기능
+- 게시글 등록, 목록 조회, 상세 조회, 수정, 삭제 기능
+- RESTful API 설계로 확장성 확보
+- 게시글과 OpenStack 리소스 연동 상태 표시
+
+## OpenStack VM 연동 기능  
+- VM 생성/삭제 요청을 게시글과 연계
+- tofumaker REST API를 통한 Terraform 템플릿 관리
+- VM 상태 실시간 조회 및 모니터링
+- 파라미터 기반 동적 템플릿 렌더링
+
+## 통합 리소스 관리
+- 게시글별 생성된 VM 리소스 추적
+- VM 생성 결과와 상태를 게시판에서 확인
+- 리소스 삭제(destroy) 기능 제공
+
+# User Experience  
+## 사용자 페르소나
+- 개발자/운영자: OpenStack 환경에서 VM을 자주 생성/삭제하는 사용자
+- 시스템 관리자: 인프라 리소스를 체계적으로 관리하고 싶은 사용자
+
+## 주요 사용자 플로우
+1. 게시글 작성 시 VM 생성 옵션 선택
+2. OpenStack 파라미터 입력 (인스턴스 타입, 네트워크 등)
+3. 게시글 등록과 동시에 VM 생성 요청
+4. 게시판에서 VM 상태 확인 및 관리
+5. 필요시 VM 삭제 및 리소스 정리
+
+## UI/UX 고려사항
+- 게시판과 VM 관리 기능의 직관적 통합
+- VM 생성/삭제 상태의 실시간 피드백
+- 에러 상황에 대한 명확한 안내
+</context>
+<PRD>
+# Technical Architecture  
+## 시스템 컴포넌트
+- **Spring Boot Backend**: REST API 서버, 비즈니스 로직 처리
+- **Board Module**: 게시판 CRUD 기능 (Controller, Service, Repository)
+- **OpenStack Integration Module**: VM 생성/관리 기능
+- **tofumaker API Client**: 외부 REST API 연동 유틸
+- **Template Manager**: Terraform 템플릿 및 파라미터 관리
+
+## 데이터 모델
+- **Board Entity**: 게시글 정보 (제목, 내용, 작성일, VM 연동 상태)
+- **OpenStackDeployRequest DTO**: VM 생성 파라미터 (인스턴스 타입, 네트워크, 보안그룹 등)
+- **VMResource Entity**: 생성된 VM 정보 추적 (리소스 ID, 상태, 게시글 연결)
+
+## APIs 및 통합
+- **Board REST API**: /api/boards (CRUD 엔드포인트)
+- **OpenStack API**: /api/openstack (VM 생성/조회/삭제)
+- **tofumaker REST API**: 외부 Terraform 실행 서비스 연동
+- **Template Rendering**: 동적 tf 파일 생성 및 파라미터 주입
+
+## 인프라 요구사항
+- Spring Boot 2.7+ 환경
+- OpenStack 클러스터 접근 권한
+- tofumaker REST API 서버 연동
+- 메모리/파일 기반 데이터 저장 (초기), DB 연동 확장 가능
+
+# Development Roadmap  
+## Phase 1: 기본 프로젝트 구조 및 게시판 CRUD
+- Spring Boot 프로젝트 초기화 및 패키지 구조 설정
+- 기본 의존성 추가 (Spring Web, Lombok, RestTemplate, Jackson)
+- application.yml 기본 설정
+- Board Entity/DTO 설계 및 구현
+- BoardController REST API 구현 (CRUD)
+- BoardService 비즈니스 로직 구현
+- BoardRepository 메모리 기반 저장소 구현
+
+## Phase 2: OpenStack 연동 기능 개발
+- OpenStackDeployRequest DTO 설계
+- TfTemplateManager 클래스 구현 (템플릿 렌더링)
+- TofuMakerApiClient 유틸 클래스 구현
+- OpenStackService 구현 (VM 생성/조회/삭제 로직)
+- OpenStack Controller API 엔드포인트 구현
+
+## Phase 3: 게시판-OpenStack 통합
+- 게시글 등록 시 VM 생성 연동 기능
+- 게시판에서 VM 상태 조회 기능
+- VM 삭제 기능과 게시글 연계
+- 리소스 상태 추적 및 표시 기능
+
+## Phase 4: 테스트 및 안정화
+- 단위 테스트 코드 작성
+- 통합 테스트 (실제 tofumaker API 연동)
+- 에러 처리 및 로그 관리 표준화
+- API 응답 형식 통일
+
+## Phase 5: 부가 기능 (선택사항)
+- 프론트엔드 구현 (React 또는 Thymeleaf)
+- 사용자 인증/권한 관리 (JWT)
+- 배포 환경 설정 및 모니터링
+
+# Logical Dependency Chain
+## Foundation (우선 구현)
+1. **Spring Boot 프로젝트 구조**: 모든 개발의 기반
+2. **Board CRUD**: 기본 게시판 기능으로 빠른 가시적 결과
+3. **OpenStack DTO/템플릿 관리**: VM 연동의 핵심 데이터 구조
+
+## Integration Layer
+4. **tofumaker API Client**: 외부 서비스 연동 유틸
+5. **OpenStack Service**: VM 생성/관리 비즈니스 로직
+6. **Board-OpenStack 통합**: 두 기능을 연결하는 핵심 로직
+
+## Enhancement & Stabilization
+7. **상태 관리 및 조회**: 리소스 추적 기능
+8. **에러 처리 및 테스트**: 안정성 확보
+9. **부가 기능**: 인증, 프론트엔드 등 확장 기능
+
+# Risks and Mitigations  
+## 기술적 도전과제
+- **tofumaker API 연동 복잡성**: 상세한 API 문서 확보 및 테스트 환경 구축
+- **OpenStack 파라미터 복잡성**: 템플릿 관리 유틸을 통한 추상화
+- **비동기 VM 생성 처리**: 상태 폴링 또는 콜백 메커니즘 구현
+
+## MVP 범위 설정
+- 초기에는 메모리 기반 저장소로 시작하여 빠른 프로토타입 구현
+- 기본적인 VM 생성/삭제 기능에 집중, 고급 OpenStack 기능은 후순위
+- 단순한 REST API 형태로 시작하여 점진적 기능 확장
+
+## 리소스 제약 대응
+- 모듈화된 구조로 개발하여 단계별 구현 가능
+- 외부 의존성(tofumaker, OpenStack) 모킹을 통한 독립적 개발
+- 템플릿 기반 접근으로 OpenStack 설정 변경에 유연하게 대응
+
+# Appendix  
+## 기술 스택
+- **Backend**: Spring Boot 2.7+, Java 11+
+- **Build Tool**: Maven 또는 Gradle
+- **HTTP Client**: RestTemplate 또는 WebClient
+- **Data**: 초기 메모리 저장, 확장 시 JPA/H2/MySQL
+- **Template Engine**: 동적 tf 파일 생성용
+
+## 주요 의존성
+```xml
+- spring-boot-starter-web
+- spring-boot-starter-validation  
+- lombok
+- jackson-databind
+- spring-boot-starter-test
+```
+
+## 참고 API 엔드포인트 설계
+```
+GET /api/boards - 게시글 목록
+POST /api/boards - 게시글 생성 (+ VM 생성 옵션)
+GET /api/boards/{id} - 게시글 상세 (+ VM 상태)
+PUT /api/boards/{id} - 게시글 수정
+DELETE /api/boards/{id} - 게시글 삭제 (+ VM 삭제 옵션)
+
+POST /api/openstack/deploy - VM 생성
+GET /api/openstack/status/{id} - VM 상태 조회  
+DELETE /api/openstack/destroy/{id} - VM 삭제
+```
+</PRD> 

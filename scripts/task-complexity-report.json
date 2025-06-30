@@ -1,0 +1,149 @@
+{
+  "meta": {
+    "generatedAt": "2025-05-30T04:07:07.806Z",
+    "tasksAnalyzed": 9,
+    "totalTasks": 21,
+    "analysisCount": 17,
+    "thresholdScore": 5,
+    "projectName": "Taskmaster",
+    "usedResearch": false
+  },
+  "complexityAnalysis": [
+    {
+      "taskId": 1,
+      "taskTitle": "Setup Project Repository and Initial Structure",
+      "complexityScore": 3,
+      "recommendedSubtasks": 4,
+      "expansionPrompt": "Break down the Spring Boot project setup into specific steps including: 1) Project initialization with build tool configuration, 2) Dependency management setup, 3) Package structure creation, and 4) Application configuration file setup.",
+      "reasoning": "This is a relatively straightforward task with clear requirements for project initialization. The complexity is low as it involves standard Spring Boot setup procedures with well-defined dependencies and structure. Breaking it into 4 subtasks allows for methodical implementation of each component."
+    },
+    {
+      "taskId": 2,
+      "taskTitle": "Implement Board CRUD API",
+      "complexityScore": 5,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Divide the Board CRUD implementation into: 1) Entity design and validation, 2) Repository layer implementation, 3) Service layer with business logic, 4) Controller endpoints implementation, and 5) Integration testing setup.",
+      "reasoning": "This task has moderate complexity as it requires implementing a complete CRUD API with multiple endpoints and business logic. The cyclomatic complexity will increase with each endpoint implementation. Five subtasks allow for separation of concerns across the different architectural layers."
+    },
+    {
+      "taskId": 3,
+      "taskTitle": "Design OpenStack VM Request DTO and Template Manager",
+      "complexityScore": 6,
+      "recommendedSubtasks": 4,
+      "expansionPrompt": "Break down the template management implementation into: 1) OpenStackDeployRequest DTO design with validation, 2) Template engine selection and integration, 3) TfTemplateManager core rendering logic, and 4) Template validation and error handling.",
+      "reasoning": "This task involves designing data structures and implementing template rendering logic, which has higher complexity due to the need for dynamic parameter handling and template generation. The Halstead complexity will be higher due to the variety of operators and operands needed for template manipulation."
+    },
+    {
+      "taskId": 4,
+      "taskTitle": "Implement tofumaker API Client",
+      "complexityScore": 7,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Divide the API client implementation into: 1) Client configuration and setup, 2) Request methods for template submission, 3) Response handling and parsing, 4) Error handling and retry logic, and 5) Integration test suite with mocked responses.",
+      "reasoning": "This task has higher complexity due to external API integration, error handling, and retry mechanisms. The cyclomatic complexity will be significant due to various conditional paths for handling different API responses and error scenarios."
+    },
+    {
+      "taskId": 5,
+      "taskTitle": "Develop OpenStack VM Management Service",
+      "complexityScore": 8,
+      "recommendedSubtasks": 6,
+      "expansionPrompt": "Break down the VM management service into: 1) Service structure and dependency setup, 2) VM creation workflow, 3) Status polling mechanism, 4) VM deletion workflow, 5) Resource tracking implementation, and 6) Error handling and recovery strategies.",
+      "reasoning": "This task has high complexity as it involves orchestrating multiple operations with the tofumaker API, implementing polling logic, and managing resource state. The cyclomatic complexity will be high due to numerous decision points in the VM lifecycle management."
+    },
+    {
+      "taskId": 6,
+      "taskTitle": "Integrate Board and OpenStack VM Features",
+      "complexityScore": 7,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Divide the integration task into: 1) BoardService enhancement for VM creation triggers, 2) VM status integration in board responses, 3) VM deletion workflow on board deletion, 4) Error handling for VM operations in board context, and 5) Integration tests for the combined functionality.",
+      "reasoning": "This task has significant complexity as it requires coordinating between two major components of the system. The integration points introduce additional complexity in terms of error handling and state management across different domains."
+    },
+    {
+      "taskId": 7,
+      "taskTitle": "Implement Resource State Tracking and UI Feedback",
+      "complexityScore": 6,
+      "recommendedSubtasks": 4,
+      "expansionPrompt": "Break down the state tracking implementation into: 1) Entity relationship enhancement between Board and VMResource, 2) Status tracking mechanism design, 3) API response enhancement with VM status, and 4) Real-time update mechanism (polling or callback).",
+      "reasoning": "This task has moderate to high complexity due to the need for real-time status updates and maintaining consistency between different entities. The state tracking logic adds complexity to the data model and API responses."
+    },
+    {
+      "taskId": 8,
+      "taskTitle": "Test, Error Handling, and API Standardization",
+      "complexityScore": 8,
+      "recommendedSubtasks": 6,
+      "expansionPrompt": "Divide the quality assurance task into: 1) Unit test suite implementation, 2) Integration test suite implementation, 3) Error handling standardization, 4) Logging framework implementation, 5) API response format standardization, and 6) API documentation generation.",
+      "reasoning": "This task has high complexity as it spans across all components of the system and requires comprehensive testing, standardization, and documentation. The dependencies on all previous tasks make it particularly complex to ensure complete coverage and consistency."
+    },
+    {
+      "taskId": 13,
+      "taskTitle": "React 프론트엔드 개발",
+      "complexityScore": 8,
+      "recommendedSubtasks": 6,
+      "expansionPrompt": "Break down the React 프론트엔드 개발 task into subtasks such as UI/UX design, 게시글 CRUD 구현, OpenStack VM 상태 대시보드 개발, 실시간 상태 업데이트 구현, 반응형 레이아웃 적용, and 통합 테스트.",
+      "reasoning": "This task involves building a complex, interactive frontend with real-time updates, dashboard integration, and responsive design. Each feature (CRUD, dashboard, real-time, responsive) requires distinct implementation and testing, indicating high complexity and the need for multiple subtasks."
+    },
+    {
+      "taskId": 14,
+      "taskTitle": "시스템 보안 및 인증 구현",
+      "complexityScore": 8,
+      "recommendedSubtasks": 6,
+      "expansionPrompt": "Expand 시스템 보안 및 인증 구현 into subtasks like JWT 인증 시스템 개발, RBAC 권한 관리, API 엔드포인트 보안 적용, CORS 정책 설정, 입력 데이터 검증 강화, and 보안 테스트 및 검토.",
+      "reasoning": "Security and authentication are inherently complex, involving multiple layers (authentication, authorization, API security, input validation). Each aspect requires careful design, implementation, and testing, justifying a high complexity score and several subtasks."
+    },
+    {
+      "taskId": 15,
+      "taskTitle": "데이터베이스 통합 및 영속성",
+      "complexityScore": 7,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Decompose 데이터베이스 통합 및 영속성 into subtasks: 데이터베이스 설치 및 설정, JPA/Hibernate 엔티티 매핑, 마이그레이션 스크립트 작성, 연결 풀 및 트랜잭션 관리, and 통합 테스트.",
+      "reasoning": "Migrating from in-memory to a relational database with ORM setup, migration scripts, and transaction management is moderately complex, requiring several distinct steps and careful coordination."
+    },
+    {
+      "taskId": 16,
+      "taskTitle": "Docker 컨테이너화 및 배포",
+      "complexityScore": 7,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Break down Docker 컨테이너화 및 배포 into subtasks: 백엔드 Dockerfile 작성, 프론트엔드 Dockerfile 작성, docker-compose.yml 구성, 환경별 설정 분리, and 컨테이너 오케스트레이션 설정.",
+      "reasoning": "Containerizing multiple services, handling environment-specific configs, and orchestrating containers is moderately complex and benefits from clear separation of concerns."
+    },
+    {
+      "taskId": 17,
+      "taskTitle": "CI/CD 파이프라인 구축",
+      "complexityScore": 6,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Expand CI/CD 파이프라인 구축 into subtasks: 워크플로우 설계, 자동 빌드/테스트 설정, 코드 품질 검사 통합, 자동 배포 스크립트 작성, and 롤백 전략 구현.",
+      "reasoning": "Setting up CI/CD involves several discrete steps (workflow, build/test, quality checks, deployment, rollback), each requiring configuration and validation, but is less complex than core application or security logic."
+    },
+    {
+      "taskId": 18,
+      "taskTitle": "모니터링 및 로깅 시스템",
+      "complexityScore": 7,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Decompose 모니터링 및 로깅 시스템 into subtasks: Prometheus/Grafana 모니터링 설정, ELK Stack 로깅 구축, 메트릭 수집 구현, 알림/경고 시스템 설정, and 헬스 체크 엔드포인트 개발.",
+      "reasoning": "Integrating monitoring and logging stacks, metrics, and alerting involves multiple tools and configurations, each with its own complexity."
+    },
+    {
+      "taskId": 19,
+      "taskTitle": "성능 최적화 및 캐싱",
+      "complexityScore": 6,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Break down 성능 최적화 및 캐싱 into subtasks: Redis 캐싱 시스템 구현, 데이터베이스 쿼리 최적화, API 응답 시간 개선, 메모리 사용량 최적화, and 부하 테스트 및 튜닝.",
+      "reasoning": "Performance optimization and caching require targeted improvements across several areas, each of which can be addressed as a subtask."
+    },
+    {
+      "taskId": 20,
+      "taskTitle": "API 문서화 및 테스트 자동화",
+      "complexityScore": 6,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Expand API 문서화 및 테스트 자동화 into subtasks: Swagger/OpenAPI 문서 작성, 단위 테스트 작성, 통합 테스트 자동화, API 테스트 자동화, and 테스트 데이터 관리.",
+      "reasoning": "API documentation and test automation are standard but multi-faceted tasks, each requiring separate attention for documentation, unit/integration testing, and data management."
+    },
+    {
+      "taskId": 21,
+      "taskTitle": "고급 기능 확장",
+      "complexityScore": 7,
+      "recommendedSubtasks": 6,
+      "expansionPrompt": "Decompose 고급 기능 확장 into subtasks: 파일 업로드 시스템 구현, 이메일 알림 서비스 개발, Elasticsearch 기반 검색 기능, 페이징/정렬 기능 구현, 실시간 알림(WebSocket) 개발, and 통합 테스트.",
+      "reasoning": "Implementing advanced features like file upload, search, real-time notifications, and paging involves integrating multiple subsystems and technologies, each with its own complexity."
+    }
+  ]
+}

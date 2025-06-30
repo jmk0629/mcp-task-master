@@ -1,0 +1,37 @@
+# 간단한 할 일 관리 앱 PRD
+
+## Overview
+사용자가 할 일을 추가, 수정, 삭제, 완료 표시할 수 있는 간단한 웹 기반 할 일 관리 애플리케이션을 개발합니다.
+
+## Core Features
+1. **할 일 추가**: 새로운 할 일 항목을 추가할 수 있습니다
+2. **할 일 목록 보기**: 모든 할 일을 목록으로 볼 수 있습니다
+3. **할 일 완료 표시**: 완료된 할 일에 체크 표시를 할 수 있습니다
+4. **할 일 삭제**: 불필요한 할 일을 삭제할 수 있습니다
+
+## Technical Architecture
+- **Frontend**: HTML, CSS, JavaScript (Vanilla JS)
+- **Backend**: Node.js with Express
+- **Database**: JSON 파일 기반 간단한 저장소
+- **API**: RESTful API 구조
+
+## Development Roadmap
+
+### Phase 1: 기본 구조 설정
+- 프로젝트 초기 설정
+- 기본 HTML 구조 생성
+- Express 서버 설정
+
+### Phase 2: 기본 기능 구현
+- 할 일 추가 기능
+- 할 일 목록 표시 기능
+- 기본 스타일링
+
+### Phase 3: 고급 기능
+- 할 일 완료/미완료 토글
+- 할 일 삭제 기능
+- 반응형 디자인
+
+## Logical Dependency Chain
+1. 프로젝트 구조 설정 → 서버 설정 → 기본 API → 프론트엔드 → 스타일링
+2. 각 기능은 독립적으로 개발 가능하되, 기본 구조가 먼저 완성되어야 함 

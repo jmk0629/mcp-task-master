@@ -1,0 +1,108 @@
+.input-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.input-container--full-width {
+  width: 100%;
+}
+
+.input-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.input-label__required {
+  color: var(--color-error);
+  margin-left: 2px;
+}
+
+.input {
+  border: 2px solid #e2e8f0;
+  border-radius: var(--border-radius-md);
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  font-family: inherit;
+  transition: all 0.2s ease-in-out;
+  width: 100%;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.input:hover:not(:disabled):not(.input--error) {
+  border-color: #cbd5e1;
+}
+
+.input::placeholder {
+  color: var(--color-text-secondary);
+}
+
+/* Sizes */
+.input--sm {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: 0.875rem;
+  min-height: 2rem;
+}
+
+.input--md {
+  padding: var(--spacing-md);
+  font-size: 1rem;
+  min-height: 2.5rem;
+}
+
+.input--lg {
+  padding: var(--spacing-lg);
+  font-size: 1.125rem;
+  min-height: 3rem;
+}
+
+/* States */
+.input--error {
+  border-color: var(--color-error);
+}
+
+.input--error:focus {
+  border-color: var(--color-error);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.input--disabled {
+  background-color: #f1f5f9;
+  color: var(--color-text-secondary);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.input--disabled::placeholder {
+  color: #94a3b8;
+}
+
+/* Messages */
+.input-message {
+  font-size: 0.75rem;
+  margin-top: var(--spacing-xs);
+}
+
+.input-message--error {
+  color: var(--color-error);
+}
+
+.input-message--helper {
+  color: var(--color-text-secondary);
+}
+
+/* Focus within container */
+.input-container:focus-within .input-label {
+  color: var(--color-primary);
+}
+
+.input-container:focus-within .input-label__required {
+  color: var(--color-error);
+} 

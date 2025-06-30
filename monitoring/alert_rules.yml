@@ -1,0 +1,102 @@
+groups:
+  - name: tofumaker_alerts
+    rules:
+      # 애플리케이션 다운 알림
+      - alert: ApplicationDown
+        expr: up{job="tofumaker-backend"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "TofuMaker Backend is down"
+          description: "TofuMaker backend application has been down for more than 1 minute."
+
+      # 높은 응답 시간 알림
+      - alert: HighResponseTime
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job="tofumaker-backend"}[5m])) > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High response time detected"
+          description: "95th percentile response time is {{ $value }}s for more than 5 minutes."
+
+      # 높은 에러율 알림
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{job="tofumaker-backend",status=~"5.."}[5m]) / rate(http_requests_total{job="tofumaker-backend"}[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is {{ $value | humanizePercentage }} for more than 5 minutes."
+
+      # 높은 CPU 사용률 알림
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage detected"
+          description: "CPU usage is {{ $value }}% for more than 10 minutes on {{ $labels.instance }}."
+
+      # 높은 메모리 사용률 알림
+      - alert: HighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage detected"
+          description: "Memory usage is {{ $value }}% for more than 10 minutes on {{ $labels.instance }}."
+
+      # 디스크 공간 부족 알림
+      - alert: DiskSpaceLow
+        expr: (1 - (node_filesystem_avail_bytes{fstype!="tmpfs"} / node_filesystem_size_bytes{fstype!="tmpfs"})) * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Disk space is running low"
+          description: "Disk usage is {{ $value }}% on {{ $labels.instance }}:{{ $labels.mountpoint }}."
+
+      # 데이터베이스 연결 실패 알림
+      - alert: DatabaseConnectionFailed
+        expr: up{job="postgres"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Database connection failed"
+          description: "PostgreSQL database has been unreachable for more than 2 minutes."
+
+      # Redis 연결 실패 알림
+      - alert: RedisConnectionFailed
+        expr: up{job="redis"} == 0
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Redis connection failed"
+          description: "Redis cache has been unreachable for more than 2 minutes."
+
+      # JVM 힙 메모리 사용률 높음
+      - alert: HighJVMHeapUsage
+        expr: (jvm_memory_used_bytes{area="heap"} / jvm_memory_max_bytes{area="heap"}) * 100 > 85
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High JVM heap usage"
+          description: "JVM heap usage is {{ $value }}% for more than 10 minutes."
+
+      # 활성 데이터베이스 연결 수 높음
+      - alert: HighDatabaseConnections
+        expr: hikaricp_connections_active > 15
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High number of active database connections"
+          description: "Active database connections: {{ $value }} for more than 5 minutes." 

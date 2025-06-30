@@ -1,0 +1,49 @@
+server:
+  port: 8081
+
+spring:
+  # 운영용 데이터베이스 설정 (MySQL 예시)
+  datasource:
+    url: jdbc:mysql://localhost:3306/boardstack?useSSL=false&serverTimezone=Asia/Seoul
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${DB_USERNAME:boardstack}
+    password: ${DB_PASSWORD:password}
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      
+  h2:
+    console:
+      enabled: false
+      
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: false
+        
+logging:
+  level:
+    root: WARN
+    com.example.boardstack: INFO
+    org.springframework.web: WARN
+    org.hibernate.SQL: WARN
+    
+# 운영 환경용 OpenStack 설정
+openstack:
+  tofumaker:
+    base-url: ${OPENSTACK_TOFUMAKER_URL:http://openstack-api:8080/api/v1}
+    timeout: 60000
+    enabled: true
+    api-key: ${OPENSTACK_API_KEY:}
+    
+# 운영용 커스텀 설정
+app:
+  debug: false
+  mock-data: false 

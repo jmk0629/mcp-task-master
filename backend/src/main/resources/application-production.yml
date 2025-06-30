@@ -1,0 +1,136 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://postgres:5432/tofumaker_production
+    username: tofumaker_user
+    password: ${POSTGRES_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 10
+      idle-timeout: 300000
+      connection-timeout: 20000
+      validation-timeout: 5000
+      leak-detection-threshold: 60000
+  
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: false
+        jdbc:
+          batch_size: 50
+        order_inserts: true
+        order_updates: true
+        cache:
+          use_second_level_cache: true
+          use_query_cache: true
+          region:
+            factory_class: org.hibernate.cache.jcache.JCacheRegionFactory
+  
+  redis:
+    host: redis
+    port: 6379
+    password: ${REDIS_PASSWORD}
+    timeout: 2000ms
+    lettuce:
+      pool:
+        max-active: 16
+        max-idle: 8
+        min-idle: 2
+        max-wait: 2000ms
+  
+  # 캐시 설정
+  cache:
+    type: redis
+    redis:
+      time-to-live: 1800000  # 30분
+  
+  # 로깅 설정
+  logging:
+    level:
+      com.tofumaker: WARN
+      org.springframework.security: ERROR
+      org.hibernate.SQL: ERROR
+      org.hibernate.type.descriptor.sql.BasicBinder: ERROR
+      org.springframework.web: WARN
+    pattern:
+      console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+      file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    file:
+      name: /var/log/tofumaker/application.log
+      max-size: 100MB
+      max-history: 90
+      total-size-cap: 10GB
+
+# 액추에이터 설정 (프로덕션용 보안 강화)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: never
+      show-components: never
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+  security:
+    enabled: true
+
+# OpenStack 설정
+openstack:
+  auth-url: ${OPENSTACK_AUTH_URL}
+  username: ${OPENSTACK_USERNAME}
+  password: ${OPENSTACK_PASSWORD}
+  project-name: ${OPENSTACK_PROJECT_NAME}
+  user-domain-name: ${OPENSTACK_USER_DOMAIN_NAME}
+  project-domain-name: ${OPENSTACK_PROJECT_DOMAIN_NAME}
+  connection-timeout: 30000
+  read-timeout: 60000
+
+# JWT 설정
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: 43200000  # 12시간 (보안 강화)
+
+# 애플리케이션 설정
+app:
+  environment: production
+  cors:
+    allowed-origins: 
+      - "https://tofumaker.com"
+      - "https://www.tofumaker.com"
+  upload:
+    max-file-size: 5MB
+    max-request-size: 25MB
+  security:
+    rate-limit:
+      enabled: true
+      requests-per-minute: 100
+    csrf:
+      enabled: true
+    headers:
+      frame-options: DENY
+      content-type-options: nosniff
+      xss-protection: "1; mode=block"
+
+# 서버 설정
+server:
+  port: 8080
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
+    min-response-size: 1024
+  http2:
+    enabled: true
+  error:
+    include-message: never
+    include-binding-errors: never
+    include-stacktrace: never
+    include-exception: false 

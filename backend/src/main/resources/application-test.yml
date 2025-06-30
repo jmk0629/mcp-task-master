@@ -1,0 +1,37 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password: 
+    driver-class-name: org.h2.Driver
+  
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true
+  
+  redis:
+    host: localhost
+    port: 6379
+    timeout: 2000ms
+  
+  # 테스트용 로깅 설정
+  logging:
+    level:
+      com.tofumaker: DEBUG
+      org.springframework.security: DEBUG
+      org.hibernate.SQL: DEBUG
+      org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+# OpenStack 설정 (테스트용 더미 값)
+openstack:
+  auth-url: http://test-openstack:5000/v3
+  username: test-user
+  password: test-password
+  project-name: test-project
+  user-domain-name: Default
+  project-domain-name: Default 

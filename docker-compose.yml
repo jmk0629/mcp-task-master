@@ -1,0 +1,91 @@
+services:
+  # PostgreSQL 데이터베이스
+  database:
+    image: postgres:13-alpine
+    container_name: boardstack-db
+    environment:
+      POSTGRES_DB: boardstack
+      POSTGRES_USER: boardstack
+      POSTGRES_PASSWORD: boardstack123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d
+    networks:
+      - boardstack-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U boardstack"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # 백엔드 Spring Boot 애플리케이션
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: boardstack-backend
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/boardstack
+      SPRING_DATASOURCE_USERNAME: boardstack
+      SPRING_DATASOURCE_PASSWORD: boardstack123
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: true
+      SERVER_PORT: 8081
+    ports:
+      - "8081:8081"
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - boardstack-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # 프론트엔드 React 애플리케이션
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: boardstack-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - boardstack-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Redis (캐싱용)
+  redis:
+    image: redis:7-alpine
+    container_name: boardstack-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - boardstack-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  boardstack-network:
+    driver: bridge 
